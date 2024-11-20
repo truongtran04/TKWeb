@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ClothesStore.Models.User>
+
+@{
+    ViewBag.Title = "Quản lý tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách người dùng</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên người dùng</th>
+            <th>Email</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <
+                <td>@(user.IsActive.HasValue && user.IsActive.Value ? "Hoạt động" : "Không hoạt động")</td>
+                <td>
+                    @if (user.IsActive ?? false)
+                    {
+                        <a href="@Url.Action("Deactivate", "AccountManagement", new { id = user.Id })" class="btn btn-warning">Vô hiệu hóa</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Activate", "AccountManagement", new { id = user.Id })" class="btn btn-success">Kích hoạt</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

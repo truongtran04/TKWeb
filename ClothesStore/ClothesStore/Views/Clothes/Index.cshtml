@@ -1,0 +1,231 @@
+﻿@model IEnumerable<ClothesStore.Models.ViewModels.ClothesViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@section header{
+    <style>
+        /* Set the initial display of sizes div to hidden */
+        .toggle-div {
+            display: none;
+        }
+        /* Add transition effects */
+        .hover-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-body:hover .hover-overlay {
+            opacity: 1;
+        }
+    </style>
+}
+@section footer{
+    <script>
+        function changeImageAndSizes(colorInput, clothesId) {
+            // Update the main image based on the selected color
+            const newImageSrc = colorInput.getAttribute('data-img-url');
+            document.getElementById('mainImage_' + clothesId).src = newImageSrc;
+
+            // Get the selected color ID from the clicked color input
+            const selectedColor = colorInput.getAttribute('data-color-id');
+
+            // Target the size container for the current item
+            const sizeContainer = document.getElementById('sizeContainer_' + clothesId);
+
+            // Loop through each size option and toggle visibility based on color match
+            Array.from(sizeContainer.getElementsByClassName('size-option')).forEach(function (sizeDiv) {
+                if (sizeDiv.getAttribute('data-color') === selectedColor) {
+                    sizeDiv.style.display = 'block';  // Show matching sizes
+                } else {
+                    sizeDiv.style.display = 'none';   // Hide non-matching sizes
+                }
+            });
+        }
+
+        // Function to toggle display for the size options
+        function toggleDiv(element) {
+            const insertDiv = element.closest('.card-body').querySelector('.insert');
+            const sizesDiv = element.closest('.card-body').querySelector('.sizes');
+            // Hide insert div and show sizes div
+            insertDiv.style.display = 'none';
+            sizesDiv.style.display = 'block';
+        }
+
+        // Hide sizes and show insert div when mouse leaves
+        function hideSizes(element) {
+            const insertDiv = element.querySelector('.insert');
+            const sizesDiv = element.querySelector('.sizes');
+            sizesDiv.style.display = 'none';
+            insertDiv.style.display = 'block';
+        }
+    </script>
+}
+
+<div>
+    <div class="banner p-0 m-0">
+        <img src="~/Images/Banner/SpMoi_cate_desktop-30Sep.jpg" class="w-100" />
+    </div>
+    <div class="container newprod" style="margin-top:70px">
+        <div class="cate" role="tablist">
+            <div class="cate-item active" id="tatca-tab" role="presentation" data-bs-toggle="tab" data-bs-target="#tatca" aria-selected="true">
+                <span class="">Tất cả</span>
+            </div>
+            <div class="cate-item" type="button" id="nu-tab" role="presentation" data-bs-toggle="tab" data-bs-target="#nu" aria-selected="true">
+                <span class="">Nữ</span>
+            </div>
+            <div class="cate-item" type="button" id="nam-tab" role="presentation" data-bs-toggle="tab" data-bs-target="#nam" aria-selected="true">
+                <span class="">Nam</span>
+            </div>
+            <div class="cate-item" type="button" id="betrai-tab" role="presentation" data-bs-toggle="tab" data-bs-target="#betrai" aria-selected="true">
+                <span class="">Bé trai</span>
+            </div>
+            <div class="cate-item" type="button" id="begai-tab" role="presentation" data-bs-toggle="tab" data-bs-target="#begai" aria-selected="true">
+                <span class="">Bé gái</span>
+            </div>
+        </div>
+        <div style="margin-top:50px">
+            <div class="d-flex justify-content-between">
+                <div class="" style="margin-top: 30px">
+                    <span class="fw-bold">Bộ lọc:</span>
+                    <div class="filter-box btn-group">
+                        <span>Khoảng giá</span>
+                        <span class="filter-box-icon">
+                            <i class="bi bi-caret-down"></i>
+                        </span>
+                    </div>
+                    <div class="filter-box btn-group">
+                        <span>Kích cở</span>
+                        <span class="filter-box-icon" id="filter-box-icon">
+                            <i class="bi bi-caret-down"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="" style="margin-top: 30px">
+                    <span class="filter-box-icon">
+                        <i class="bi bi-list-task"></i>
+                    </span>
+                    <span class="">Sắp xếp theo</span>
+                    <span class="filter-box-icon">
+                        <i class="bi bi-caret-down"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <!--End Slide-->
+            <div class="container" style="margin-top:100px">
+                <div class="container" style="margin-top:100px; margin-bottom: 100px;">
+                    <div class="container-fluid p-0">
+                        <div class="row">
+                            @foreach (var item in Model.Where(clo => clo.ClothesItem.ClothingTypeID == "CT001").Take(8))
+                            {
+                                <div class="col-3 mt-3 mb-3">
+                                    <div class="card border-0">
+                                        <div class="card-body p-0 position-relative" onmouseleave="hideSizes(this)">
+                                            <!-- Main image -->
+                                            <a href="@Url.Action("Index", "ClothesDetail", new { id = item.ClothesItem.ClothesID })">
+                                                <img id="mainImage_@item.ClothesItem.ClothesID" class="mainImage img-fluid rounded" src="@item.ClothesItem.UrlImage" alt="Product Image" onmouseenter="showInsert(this)">
+                                            </a>
+                                            <!-- Insert div -->
+                                            <div class="insert bg-light text-center p-2 position-absolute bottom-0 start-50 translate-middle-x mb-3 rounded btn btn-light border-0 hover-overlay" style="width: 90%;" onclick="toggleDiv(this)">
+                                                Thêm vào giỏ hàng
+                                            </div>
+                                            <!-- Sizes div -->
+                                            <div class="sizes bg-light text-center p-2 position-absolute bottom-0 start-50 translate-middle-x mb-3 rounded toggle-div" style="width: 90%; display: none;">
+                                                Thêm vào giỏ hàng
+                                                <div class="d-flex justify-content-center" id="sizeContainer_@item.ClothesItem.ClothesID">
+                                                    @foreach (var size in item.Sizes)
+                                                    {
+                                                        var specificImages = (List<ClothesStore.Models.Clothes_Color_Size>)item.Clothes_Color_Sizes;
+                                                        var colorID = specificImages.FirstOrDefault(clo => clo.SizeID == size.SizeID)?.ColorID;
+
+                                                        <div class="btn bg-white m-2 size-option" data-color="@colorID">
+                                                            @size.SizeName
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer border-0 p-0">
+                                            <div class="d-flex flex-row mt-3 mb-2">
+                                                @foreach (var color in item.Colors)
+                                                {
+                                                    var specificImages = (List<ClothesStore.Models.Image>)item.Images;
+                                                    var imgUrl = specificImages.FirstOrDefault(img => img.ColorID == color.ColorID)?.UrlMainImg;
+                                                    var imageWithOrderOne = specificImages.FirstOrDefault(img => img.ColorID == color.ColorID && img.ImageOrder == 1);
+                                                    <div class="me-2">
+                                                        <input type="radio" class="btn-check" name="color_@item.ClothesItem.ClothesID" id="@color.ColorID"
+                                                               autocomplete="off" onclick="changeImageAndSizes(this, '@item.ClothesItem.ClothesID')" data-color-id="@color.ColorID"
+                                                               data-img-url="@imgUrl"
+                                                               @(imageWithOrderOne != null ? "checked" : "")>
+                                                        <label class="btn rounded-circle d-flex justify-content-center align-items-center" for="@color.ColorID" style="width: 20px; height: 25px;">
+                                                            <img src="@color.UrlImage" alt="" class="rounded-circle" style="width: 20px; height: 20px;">
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="mb-2">
+                                                <a class="#" href="#">
+                                                    <p class="card-text">@item.ClothesItem.ClothesName</p>
+                                                </a>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span><strong>@item.ClothesItem.Price đ</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const cateItems = document.querySelectorAll('.cate-item');
+
+        cateItems.forEach(item => {
+            item.addEventListener('click', function () {
+                // Xóa class 'active' khỏi tất cả các mục
+                cateItems.forEach(cate => cate.classList.remove('active'));
+
+                // Thêm class 'active' vào mục được bấm
+                this.classList.add('active');
+            });
+        });
+        $(document).ready(function () {
+            
+            $('#btnAProd').click(function () {
+                // Lấy tab đang hiển thị
+                var currentTab = $('.tab-pane.active');
+                // Lấy chiều cao tối đa của tab hiện tại
+                var maxHeight = currentTab.prop('scrollHeight');
+                // Lấy chiều cao hiện tại của phần tử có class "box"
+                var currentHeight = currentTab.height();
+                // Cộng thêm 600px vào chiều cao hiện tại nếu chiều cao chưa đạt tối đa
+                if (currentHeight < maxHeight) {
+                    currentTab.css('height', currentHeight + 600 + 'px');
+                }
+                // Kiểm tra nếu chiều cao hiện tại đã đạt tối đa
+                if (currentTab.height() >= maxHeight) {
+                    // Ẩn nút "Xem tất cả" khi chiều cao đạt tối đa
+                    $('#btnAProd').hide();
+                }                
+            });
+            $('[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
+                // Lấy tab đang hiển thị
+                var target = $(e.target).attr("data-bs-target");
+
+                // Reset chiều cao của tab đang hiển thị về giá trị mặc định
+                $(target).css('height', '1200px'); // Chiều cao lý tưởng cho tab hiện tại
+                // Hiển thị lại nút "Xem tất cả" khi chuyển sang tab mới
+                $('#btnAProd').show();
+
+
+            });
+        });
+    </script>
+</div>

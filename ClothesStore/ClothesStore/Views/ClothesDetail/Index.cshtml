@@ -1,0 +1,250 @@
+﻿@{
+    var userId = Session["UserId"] != null ? Session["UserId"].ToString() : string.Empty;
+}
+@model ClothesStore.Models.Cloth
+@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<style>
+    .btn.selected {
+        border: 2px solid #007bff; /* Màu xanh của Bootstrap */
+        background-color: #e9ecef; /* Màu nền sáng hơn */
+    }
+
+    /* CSS để ẩn phần nội dung ban đầu */
+    .toggle-content {
+        display: none;
+    }
+
+    /* CSS cho icon toggle */
+    .toggle-title {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container" style="margin-top: 50px;">
+    <div class="row">
+        <!-- Phần ảnh sản phẩm với ảnh chính và thumbnail cùng ảnh phụ -->
+        <div class="col-md-6 d-flex">
+            <img id="mainImage" class="img-fluid rounded me-3" src="@Model.UrlImage" alt="Product Image" style="width: 100%; height:700px; max-width: 500px;">
+            <div class="d-flex flex-column me-3">
+                <div class="thumbnail-container" style="overflow: auto; height: 500px;">
+                    @foreach (var image in ViewBag.Images)
+                    {
+                        if (image.ClothesID == Model.ClothesID)
+                        {
+                            <img src="@image.UrlMainImg" alt="Product Thumbnail" class="img-thumbnail mb-2" style="width: 80px; cursor: pointer;"
+                                 onclick="document.getElementById('mainImage').src='@image.UrlMainImg'" />
+                            <img src="@image.UrlSecondaryImage1" alt="Product Thumbnail" class="img-thumbnail mb-2" style="width: 80px; cursor: pointer;"
+                                 onclick="document.getElementById('mainImage').src='@image.UrlSecondaryImage1'" />
+                            <img src="@image.UrlSecondaryImage2" alt="Product Thumbnail" class="img-thumbnail mb-2" style="width: 80px; cursor: pointer;"
+                                 onclick="document.getElementById('mainImage').src='@image.UrlSecondaryImage2'" />
+                            <img src="@image.UrlSecondaryImage3" alt="Product Thumbnail" class="img-thumbnail mb-2" style="width: 80px; cursor: pointer;"
+                                 onclick="document.getElementById('mainImage').src='@image.UrlSecondaryImage3'" />
+                        }
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h3>@Model.ClothesName</h3>
+            <p><strong>Giá: </strong>@Model.Price đ</p>
+
+            <!-- Hiển thị màu sắc -->
+            <div class="d-flex">
+                <p class="me-2"><strong>Màu sắc: </strong></p>
+                @foreach (var image in ViewBag.Images)
+                {
+                    if (image.ClothesID == Model.ClothesID)
+                    {
+                        foreach (var color in ViewBag.Colors)
+                        {
+                            if (color.ColorID == image.ColorID)
+                            {
+                                <div class="me-2">
+                                    <input type="radio" class="btn-check" name="color_@Model.ClothesID" id="@color.ColorID" autocomplete="off"
+                                           onclick="updateMainImage(this)" data-color-id="@color.ColorID" data-img-url="@image.UrlMainImg" @(image.ImageOrder == 1 ? "checked" : "")>
+                                    <label class="btn rounded-circle d-flex justify-content-center align-items-center" for="@color.ColorID" style="width: 20px; height: 25px; text-align: center;">
+                                        <img src="@color.UrlImage" alt="" class="rounded-circle" style="width: 20px; height: 20px;">
+                                    </label>
+                                </div>
+                            }
+                        }
+                    }
+                }
+            </div>
+
+
+            <!-- Hiển thị size -->
+            <div class="mt-3" id="sizeOptions">
+                <p><strong>Kích thước: </strong></p>
+                @foreach (var quantity in ViewBag.Quantity)
+                {
+                    if (quantity.ClothesID == Model.ClothesID)
+                    {
+                        foreach (var size in ViewBag.Sizes)
+                        {
+                            if (size.SizeID == quantity.SizeID)
+                            {
+                                <div class="btn bg-white m-2 @quantity.ColorID" style="display: none; cursor: pointer;" onclick="selectSize(this)">@size.SizeName</div>
+                            }
+                        }
+                    }
+                }
+            </div>
+
+            <!-- Thêm vào phần mô tả với toggle ẩn/hiện -->
+            <div class="toggle-title" onclick="toggleContent('productDescription')">
+                <span>Mô tả sản phẩm</span> <span id="productDescriptionIcon">+</span>
+            </div>
+            <div id="productDescription" class="toggle-content">
+                <p>@Model.Description</p>
+            </div>
+
+            <div class="toggle-title" onclick="toggleContent('fabricInfo')">
+                <span>Chất liệu</span> <span id="fabricInfoIcon">+</span>
+            </div>
+            <div id="fabricInfo" class="toggle-content">
+                <p>@Model.Fabric</p>
+            </div>
+
+            <div class="toggle-title" onclick="toggleContent('usageInstructions')">
+                <span>Hướng dẫn sử dụng</span> <span id="usageInstructionsIcon">+</span>
+            </div>
+            <div id="usageInstructions" class="toggle-content">
+                <p>@Model.UserInstructions</p>
+            </div>
+
+
+
+            <form action="@Url.Action("AddToCart", "Cart")" method="post" onsubmit="return validateForm()">
+                <input type="hidden" name="clothesId" value="@Model.ClothesID" />
+                <input type="hidden" name="clothesName" value="@Model.ClothesName" />
+                <input type="hidden" name="price" value="@Model.Price" />
+                <input type="hidden" name="mainImage" id="mainImageHidden" value="@Model.UrlImage" />
+                <input type="hidden" name="userId" value="@userId" />
+
+                <input type="hidden" name="size" id="selectedSize" />
+                <input type="hidden" name="color" id="selectedColor" />
+                <button type="submit" class="btn btn-primary mt-3" onclick="setSelectedValues();">Thêm vào giỏ hàng</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section footer {
+    <script>
+        var isLoggedIn = @((Session["UserId"] != null) ? "true" : "false");
+
+        function showSuccessMessage() {
+            alert("Sản phẩm đã được thêm vào giỏ hàng.");
+        }
+
+        function toggleContent(id) {
+            var content = document.getElementById(id);
+            var icon = document.getElementById(id + 'Icon');
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+                icon.innerText = "-"; // Chuyển đổi thành -
+            } else {
+                content.style.display = "none";
+                icon.innerText = "+"; // Chuyển đổi về +
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            displayFirstColorSizes(); // Gọi hàm để hiển thị size cho màu đầu tiên
+        });
+
+        function selectSize(sizeDiv) {
+            var sizeButtons = document.querySelectorAll('#sizeOptions .btn');
+            sizeButtons.forEach(function (btn) {
+                btn.classList.remove('selected'); // Xóa trạng thái 'selected' khỏi các nút size khác
+            });
+
+            sizeDiv.classList.add('selected'); // Đánh dấu nút kích thước đã chọn
+            document.getElementById('selectedSize').value = sizeDiv.innerText; // Lưu giá trị kích thước vào trường ẩn
+        }
+
+
+        function setSelectedValues() {
+            // Lấy màu sắc đã chọn
+            var selectedColor = document.querySelector('input[name^="color_"]:checked');
+            if (selectedColor) {
+                document.getElementById('selectedColor').value = selectedColor.getAttribute('data-color-id');
+            }
+
+            // Lấy kích thước đã chọn
+            var selectedSize = document.querySelector('#sizeOptions .selected');
+            if (selectedSize) {
+                document.getElementById('selectedSize').value = selectedSize.innerText; // Lấy tên kích thước
+            }
+            // Cập nhật URL hình ảnh vào trường ẩn
+            var mainImageUrl = document.getElementById('mainImage').src;
+            document.getElementById('mainImageHidden').value = mainImageUrl;
+        }
+
+        function validateForm() {
+            var selectedSize = document.getElementById('selectedSize').value;
+            var selectedColor = document.getElementById('selectedColor').value;
+            if (!selectedSize || !selectedColor) {
+                alert("Vui lòng chọn màu sắc và kích thước trước khi thêm vào giỏ hàng.");
+                return false;
+            }
+
+            if (isLoggedIn) {
+                showSuccessMessage();
+            } else {
+                alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            }
+
+            return true;
+        }
+
+
+        function updateMainImage(colorInput) {
+            var imageUrl = colorInput.getAttribute('data-img-url');
+            document.getElementById('mainImage').src = imageUrl;
+
+            // Cập nhật giá trị ColorID của màu đã chọn vào trường ẩn
+            document.getElementById('selectedColor').value = colorInput.getAttribute('data-color-id');
+
+            // Hiển thị các size tương ứng với màu đã chọn
+            updateSizes(colorInput);
+        }
+
+
+        function updateSizes(colorInput) {
+            var colorId = colorInput.getAttribute('data-color-id');
+            var sizeButtons = document.querySelectorAll('#sizeOptions .btn');
+
+            sizeButtons.forEach(function (btn) {
+                // Kiểm tra nếu kích thước tương ứng với màu đã chọn
+                if (btn.classList.contains(colorId)) {
+                    btn.style.display = 'block'; // Hiện kích thước
+                } else {
+                    btn.style.display = 'none'; // Ẩn kích thước
+                }
+            });
+        }
+
+        function displayFirstColorSizes() {
+            var firstColorInput = document.querySelector('input[name^="color_"]'); // Lấy màu đầu tiên
+            if (firstColorInput) {
+                firstColorInput.checked = true; // Đặt là đã chọn
+                updateMainImage(firstColorInput); // Cập nhật ảnh chính
+                updateSizes(firstColorInput); // Hiển thị size tương ứng
+            }
+        }
+    </script>
+}
+

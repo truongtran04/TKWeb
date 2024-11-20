@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9d820a83e2934548be05cb0c796e0b5b" Name="Diagram1">
+        <EntityTypeShape EntityType="TESTModel.Cart" Width="1.5" PointX="15" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.CartDetail" Width="1.5" PointX="17.25" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Category" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Category_ClothingType" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Cloth" Width="1.5" PointX="5.25" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Clothes_Color_Size" Width="1.5" PointX="7.5" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.ClothingStyle" Width="1.5" PointX="3" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.ClothingType" Width="1.5" PointX="0.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Color" Width="1.5" PointX="5.25" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Image" Width="1.5" PointX="10.5" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.OrderDetail" Width="1.5" PointX="17.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Order" Width="1.5" PointX="15" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.OtpRecord" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Payment" Width="1.5" PointX="17.25" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Profile" Width="1.5" PointX="15" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.Size" Width="1.5" PointX="5.25" PointY="16.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.sysdiagram" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.UserRole" Width="1.5" PointX="15" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TESTModel.User" Width="1.5" PointX="12.75" PointY="8.125" IsExpanded="true" />
+        <AssociationConnector Association="TESTModel.FK__Cart__UserID__2E70E1FD" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__CartDetai__CartI__314D4EA8" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Category___Categ__7073AF84" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Clothes__Categor__047AA831" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Category___Cloth__7167D3BD" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Clothes__Clothin__056ECC6A" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Clothes__Clothin__0662F0A3" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Clothes_C__Cloth__0A338187" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Image__ClothesID__10E07F16" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Clothes_C__Color__0B27A5C0" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Clothes_C__SizeI__0C1BC9F9" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__ClothingS__Cloth__753864A1" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Image__ColorID__11D4A34F" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__OrderDeta__Order__46486B8E" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Orders__UserID__38EE7070" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Payments__OrderI__3DB3258D" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__Profiles__UserId__3429BB53" ManuallyRouted="false" />
+        <AssociationConnector Association="TESTModel.FK__UserRoles__UserI__26CFC035" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

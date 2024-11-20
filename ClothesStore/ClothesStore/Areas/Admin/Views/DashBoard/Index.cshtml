@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Label = "Admin";
+    ViewBag.FucLabel = "Dashboard";
+}
+
+@section header{
+    <!-- Summernote -->
+    <link href="~/Public/vendor/summernote/summernote.css" rel="stylesheet">
+}
+@section footer{
+    <!-- Summernote -->
+    <script src="~/Public/vendor/summernote/js/summernote.min.js"></script>
+    <!-- Summernote init -->
+    <script src="~/Public/js/plugins-init/summernote-init.js"></script>
+}
+<div class="summernote"></div>
