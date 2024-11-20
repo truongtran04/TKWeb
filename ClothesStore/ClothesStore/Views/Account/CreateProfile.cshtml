@@ -1,0 +1,45 @@
+﻿@model ClothesStore.Models.ProfileViewModel
+
+<h2>Tạo Hồ Sơ Mới</h2>
+
+@using (Html.BeginForm("CreateProfile", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.FullName)
+        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.FullName)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.PhoneNumber)
+        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.PhoneNumber)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Address)
+        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Address)
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DateOfBirth)
+        @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.DateOfBirth)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Gender)
+        @Html.DropDownListFor(m => m.Gender, new SelectList(new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Nam", Value = "Nam" },
+            new SelectListItem { Text = "Nữ", Value = "Nữ" }
+        }, "Value", "Text"), "Chọn giới tính", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Gender)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+}

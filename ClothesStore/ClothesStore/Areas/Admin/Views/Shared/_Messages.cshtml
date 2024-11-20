@@ -1,0 +1,8 @@
+﻿@if (TempData.ContainsKey("messages"))
+{
+    ClothesStore.Library.NotiMessage messages = (ClothesStore.Library.NotiMessage)TempData["messages"];
+    <div class="alert alert-@messages.TypeNoMess" style="color: white">
+        @messages.NotiMess
+    </div>
+}
+

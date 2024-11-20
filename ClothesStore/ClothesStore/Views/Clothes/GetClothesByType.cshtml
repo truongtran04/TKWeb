@@ -1,0 +1,224 @@
+﻿@model IEnumerable<ClothesStore.Models.ViewModels.ClothesViewModel>
+@{
+    ViewBag.Title = "GetClothesByType";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@section header{
+    <style>
+        /* Set the initial display of sizes div to hidden */
+        .toggle-div {
+            display: none;
+        }
+        /* Add transition effects */
+        .hover-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-body:hover .hover-overlay {
+            opacity: 1;
+        }
+    </style>
+}
+@section footer{
+    <script>
+        function changeImageAndSizes(colorInput, clothesId) {
+            // Update the main image based on the selected color
+            const newImageSrc = colorInput.getAttribute('data-img-url');
+            document.getElementById('mainImage_' + clothesId).src = newImageSrc;
+
+            // Get the selected color ID from the clicked color input
+            const selectedColor = colorInput.getAttribute('data-color-id');
+
+            // Target the size container for the current item
+            const sizeContainer = document.getElementById('sizeContainer_' + clothesId);
+
+            // Loop through each size option and toggle visibility based on color match
+            Array.from(sizeContainer.getElementsByClassName('size-option')).forEach(function (sizeDiv) {
+                if (sizeDiv.getAttribute('data-color') === selectedColor) {
+                    sizeDiv.style.display = 'block';  // Show matching sizes
+                } else {
+                    sizeDiv.style.display = 'none';   // Hide non-matching sizes
+                }
+            });
+        }
+
+        // Function to toggle display for the size options
+        function toggleDiv(element) {
+            const insertDiv = element.closest('.card-body').querySelector('.insert');
+            const sizesDiv = element.closest('.card-body').querySelector('.sizes');
+            // Hide insert div and show sizes div
+            insertDiv.style.display = 'none';
+            sizesDiv.style.display = 'block';
+        }
+
+        // Hide sizes and show insert div when mouse leaves
+        function hideSizes(element) {
+            const insertDiv = element.querySelector('.insert');
+            const sizesDiv = element.querySelector('.sizes');
+            sizesDiv.style.display = 'none';
+            insertDiv.style.display = 'block';
+        }
+    </script>
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="ms-3 w-100" aria-label="breadcrumb">
+            <ol class="breadcrumb" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" id="homeLink">Home</a></li>
+                <!-- Section and Item will be dynamically added here -->
+            </ol>
+        </nav>
+        <div class="col-3 bg-light p-0">
+            <!-- Accordion 1 -->
+            <div class="overflow-hidden sticky-top" style="height: 860px;">
+                <div class="mb-5 ms-3 me-3">
+                    <div class="accordion" id="sidebarAccordion">
+                        <div class="accordion-item bg-light border-top border-2 rounded-0">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Danh mục sản phẩm
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree" data-bs-parent="#sidebarAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        @foreach (var item in ViewBag.ClothingType)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("GetClothesByType", "Clothes", new { idCate = item.CategoryID,  idType = item.ClothingTypeID})"
+                                                   class="item-link"
+                                                   data-section="Danh mục sản phẩm"
+                                                   data-item="@item.ClothingType.ClothingTypeName">
+                                                    @item.ClothingType.ClothingTypeName
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main content -->
+        <div class="col-9 bg-light">
+            <div class="bg-light mt-4">
+                <h2 class="mb-5">Hàng mới về</h2>
+                <div class="d-flex overflow-hidden">
+                    @foreach (var item in ViewBag.ClothesStyle)
+                    {
+                        <div class="col-3">
+                            <div class="card border-0 me-3">
+                                <div class="card-body p-0">
+                                    <!-- The link to trigger AJAX call with clothing type ID -->
+                                    <a href="#" class="clothing-link" data-id="@item.ClothingStyleID">
+                                        <img src="~/Content/images/8tp24c001-sg498-thumb.png" alt="@item.ClothingStyleName" class="img-fluid" />
+                                    </a>
+                                </div>
+                                <div class="footer text-center">
+                                    <p>@item.ClothingStyleName</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <p><strong>Số lượng</strong></p>
+            </div>
+            <div class="container-fluid border-top">
+                <div class="row mt-4" id="clothesContainer">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-4 mt-3 mb-3">
+                            <div class="card border-0">
+                                <div class="card-body p-0 position-relative" onmouseleave="hideSizes(this)">
+                                    <!-- Main image -->
+                                    <a href="@Url.Action("Index", "ClothesDetail", new { id = item.ClothesItem.ClothesID })">
+                                        <img id="mainImage_@item.ClothesItem.ClothesID" class="mainImage img-fluid rounded" src="@item.ClothesItem.UrlImage" alt="Product Image" onmouseenter="showInsert(this)">
+                                    </a>
+                                    <!-- Insert div -->
+                                    <div class="insert bg-light text-center p-2 position-absolute bottom-0 start-50 translate-middle-x mb-3 rounded btn btn-light border-0 hover-overlay" style="width: 90%;" onclick="toggleDiv(this)">
+                                        Thêm vào giỏ hàng
+                                    </div>
+                                    <!-- Sizes div -->
+                                    <div class="sizes bg-light text-center p-2 position-absolute bottom-0 start-50 translate-middle-x mb-3 rounded toggle-div" style="width: 90%; display: none;">
+                                        Thêm vào giỏ hàng
+                                        <div class="d-flex justify-content-center" id="sizeContainer_@item.ClothesItem.ClothesID">
+                                            @foreach (var size in item.Sizes)
+                                            {
+                                                var specificImages = (List<ClothesStore.Models.Clothes_Color_Size>)item.Clothes_Color_Sizes;
+                                                var colorID = specificImages.FirstOrDefault(clo => clo.SizeID == size.SizeID)?.ColorID;
+
+                                                <div class="btn bg-white m-2 size-option" data-color="@colorID">
+                                                    @size.SizeName
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-0 p-0">
+                                    <div class="d-flex flex-row mt-3 mb-2">
+                                        @foreach (var color in item.Colors)
+                                        {
+                                            var specificImages = (List<ClothesStore.Models.Image>)item.Images;
+                                            var imgUrl = specificImages.FirstOrDefault(img => img.ColorID == color.ColorID)?.UrlMainImg;
+                                            var imageWithOrderOne = specificImages.FirstOrDefault(img => img.ColorID == color.ColorID && img.ImageOrder == 1);
+                                            <div class="me-2">
+                                                <input type="radio" class="btn-check" name="color_@item.ClothesItem.ClothesID" id="@color.ColorID"
+                                                       autocomplete="off" onclick="changeImageAndSizes(this, '@item.ClothesItem.ClothesID')" data-color-id="@color.ColorID"
+                                                       data-img-url="@imgUrl"
+                                                       @(imageWithOrderOne != null ? "checked" : "")>
+                                                <label class="btn rounded-circle d-flex justify-content-center align-items-center" for="@color.ColorID" style="width: 20px; height: 25px;">
+                                                    <img src="@color.UrlImage" alt="" class="rounded-circle" style="width: 20px; height: 20px;">
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="mb-2">
+                                        <a class="#" href="#">
+                                            <p class="card-text">@item.ClothesItem.ClothesName</p>
+                                        </a>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span><strong>@item.ClothesItem.Price đ</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Event listener for clicks on clothing style links
+        $(".clothing-link").click(function (e) {
+            e.preventDefault(); // Prevent the default anchor behavior
+
+            // Get the ClothingTypeID from the clicked link
+            var clothingTypeId = $(this).data("id");
+
+            // AJAX request to fetch products related to the clothing style
+            $.ajax({
+                url: '@Url.Action("GetClothesByStyle", "Clothes")', // URL of the action
+                type: 'GET',
+                data: { idStyle: clothingTypeId }, // Send ClothingTypeID as parameter
+                success: function (response) {
+                    // On success, update the product container with the new products
+                    $("#clothesContainer").html(response);
+                },
+                error: function () {
+                    alert("Error loading products.");
+                }
+            });
+        });
+    });
+</script>
