@@ -60,6 +60,23 @@
             clothesSelect.addEventListener("change", updateImageName);
             colorSelect.addEventListener("change", updateImageName);
         });
+
+    </script>
+    <script>
+        function previewImage(input, previewId) {
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var preview = document.getElementById(previewId);
+                preview.style.display = 'block';  // Show the image
+                preview.src = e.target.result;  // Set the source of the preview image
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);  // Read the file as a Data URL
+            }
+        }
     </script>
 }
 <section class="content">
@@ -78,20 +95,23 @@
                     </div>
                 </div>
                 <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                    <a href="@Url.Action("Index", "Images")" class="btn btn-primary">
+                    <a href="@Url.Action("Details", "Clothes", new { id = Model.ClothesID })" class="btn btn-primary">
                         Quay lại
                     </a>
                 </div>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-md-2">
+                        <img src="@Model.Cloth.UrlImage" class="img-fluid rounded" />
+                    </div>
+                    <div class="col-md-9 mt-4">
                         <div class="form-group">
                             <label class="text-uppercase h6">
                                 Tên quần áo
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.DropDownList("ClothesID", null, htmlAttributes: new { @class = "form-control", @id = "ClothesID" })
+                            @Html.EditorFor(model => model.Cloth.ClothesName, new { htmlAttributes = new { @class = "form-control", @id = "ClothesID", @readonly = "readonly" } })
                             @Html.ValidationMessageFor(model => model.ClothesID, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group">
@@ -99,7 +119,7 @@
                                 Màu sắc
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.DropDownList("ColorID", null, htmlAttributes: new { @class = "form-control", @id = "ColorID" })
+                            @Html.EditorFor(model => model.Color.ColorName, new { htmlAttributes = new { @class = "form-control", @id = "ColorID", @readonly = "readonly" } })
                             @Html.ValidationMessageFor(model => model.ColorID, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group">
@@ -107,41 +127,53 @@
                                 Tên hình hình ảnh - màu sắc
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.EditorFor(model => model.ImageName, new { htmlAttributes = new { @class = "form-control disabled", @id = "ImageName" } })
+                            @Html.EditorFor(model => model.ImageName, new { htmlAttributes = new { @class = "form-control disabled", @id = "ImageName", @readonly = "readonly" } })
                             @Html.ValidationMessageFor(model => model.ImageName, "", new { @class = "text-danger" })
                         </div>
                     </div>
+                </div>
+                <div class="row mt-3">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="text-uppercase h6">
                                 Ảnh chính
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.TextBoxFor(model => model.MainImage, new { type = "file", @class = "form-control" })
+                            @Html.TextBoxFor(model => model.MainImage, new { type = "file", @class = "form-control", onchange = "previewImage(this, 'mainImagePreview')" })
+                            <img src="@Model.UrlMainImg" id="mainImagePreview" class="rounded" style="display: block; max-width: 100%; margin-top: 10px;" />
                             @Html.ValidationMessageFor(model => model.MainImage, "", new { @class = "text-danger" })
                         </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="text-uppercase h6">
                                 Ảnh phụ 1
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.TextBoxFor(model => model.SecondaryImage1, new { type = "file", @class = "form-control" })
+                            @Html.TextBoxFor(model => model.SecondaryImage1, new { type = "file", @class = "form-control", onchange = "previewImage(this, 'secondaryImage1Preview')" })
+                            <img src="@Model.UrlSecondaryImage1" id="secondaryImage1Preview" class="rounded" style="display: block; max-width: 100%; margin-top: 10px;" />
                             @Html.ValidationMessageFor(model => model.SecondaryImage1, "", new { @class = "text-danger" })
                         </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="text-uppercase h6">
                                 Ảnh phụ 2
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.TextBoxFor(model => model.SecondaryImage2, new { type = "file", @class = "form-control" })
+                            @Html.TextBoxFor(model => model.SecondaryImage2, new { type = "file", @class = "form-control", onchange = "previewImage(this, 'secondaryImage2Preview')" })
+                            <img src="@Model.UrlSecondaryImage2" id="secondaryImage2Preview" class="rounded" style="display: block; max-width: 100%; margin-top: 10px;" />
                             @Html.ValidationMessageFor(model => model.SecondaryImage2, "", new { @class = "text-danger" })
                         </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="text-uppercase h6">
                                 Ảnh phụ 3
                                 <span class="text-danger">(*)</span>
                             </label>
-                            @Html.TextBoxFor(model => model.SecondaryImage3, new { type = "file", @class = "form-control" })
+                            @Html.TextBoxFor(model => model.SecondaryImage3, new { type = "file", @class = "form-control", onchange = "previewImage(this, 'secondaryImage3Preview')" })
+                            <img src="@Model.UrlSecondaryImage3" id="secondaryImage3Preview" class="rounded" style="display: block; max-width: 100%; margin-top: 10px;" />
                             @Html.ValidationMessageFor(model => model.SecondaryImage3, "", new { @class = "text-danger" })
                         </div>
                     </div>

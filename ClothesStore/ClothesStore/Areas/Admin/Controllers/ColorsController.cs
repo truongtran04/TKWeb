@@ -156,9 +156,8 @@ namespace ClothesStore.Areas.Admin.Controllers
                     }
                 }
             }
-            return RedirectToAction("Index");
+               return RedirectToAction("Index");
         }
-
         // GET: Admin/Colors/Edit/5
         public ActionResult Edit(string id)
         {

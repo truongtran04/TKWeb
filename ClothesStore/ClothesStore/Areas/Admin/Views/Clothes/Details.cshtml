@@ -11,19 +11,19 @@
 <section class="content">
     <div class="card">
         <div class="card-header border-bottom p-0 p-3 mx-1">
-            <div class="col-sm-6 p-md-0">
-                <div class="welcome-text">
-                    <h3 class="card-title">
-                        <strong>@ViewBag.FucLabel</strong>
-                    </h3>
-                </div>
-                <div>
-                    <img src="@Model.UrlImage" class="img-fluid" style="width: 150px" />
-                    <span>@Model.ClothesName</span>
+            <div class="col-sm-9 p-md-0">
+                <div class="row">
+                    <div class="col-md-2 p-0">
+                        <img src="@Model.UrlImage" class="img-fluid rounded"/>
+                    </div>
+                    <div class="col-md-10">
+                        <label class="text-uppercase h4">
+                            @Model.ClothesName
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-
+            <div class="col-sm-3 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                 <a href="@Url.Action("Index", "Clothes")" class="btn btn-primary">
                     Quay lại
                 </a>
@@ -95,8 +95,34 @@
                     </div>
                     <div class="tab-pane fade" id="profile1">
                         <div class="pt-4">
+                            @*<a href="@Url.Action("Create", "Images", new { idClothes = Model.ClothesID })" class="btn btn-success" id="toggleButton">Thêm</a>*@
                             @Html.Action("GetImages", "Images", new { idClothes = Model.ClothesID })
+                            <!-- This part will be shown initially -->
+                            <div id="indexAction" style="display:block;">
+                                <!-- Button to trigger visibility change -->
+                            </div>
+                            <!-- This part will be hidden initially -->
+                            <div id="createAction" style="display:none;">
+
+                                @*@Html.Action("Create", "Images", new { idClothes = Model.ClothesID })*@
+                            </div>
                         </div>
+
+                        @*<script>
+                            // JavaScript to toggle visibility
+                            document.getElementById("toggleButton").addEventListener("click", function () {
+                                var createAction = document.getElementById("createAction");
+                                var indexAction = document.getElementById("indexAction");
+                                if (createAction.style.display === "none") {
+                                    createAction.style.display = "block";  // Show Create action
+                                    indexAction.style.display = "none";
+                                } else {
+                                    createAction.style.display = "none";   // Hide Create action
+                                    indexAction.style.display = "block";
+                                }
+                            });
+                        </script>*@
+
                     </div>
                     <div class="tab-pane fade" id="contact1">
                         <div class="pt-4">

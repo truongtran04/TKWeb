@@ -1,11 +1,14 @@
 ﻿@model IEnumerable<ClothesStore.Models.Image>
+@{
+    var clothesID = ViewBag.ClothesID;
+}
 
 <section class="content">
     @Html.Partial("_Messages")
     <div class="card">
         <div class="card-header border-bottom p-0 p-3 mx-1">
             <div class="col-sm-6 p-md-0">
-                <a href="@Url.Action("Create", "Images")" class="btn btn-success mr-2">
+                <a href="@Url.Action("Create", "Images", new { idClothes = clothesID })" class="btn btn-success mr-2">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     <span class="ml-1">Thêm mới</span>
                 </a>
@@ -51,6 +54,10 @@
                                     <a href="@Url.Action("Edit", "Images", new { id = item.ImageID })" class="btn btn-success">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         <span>Sửa</span>
+                                    </a>
+                                    <a href="@Url.Action("Delete", "Images", new { id = item.ImageID })" class="btn btn-danger">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <span class="ml-1">Xóa</span>
                                     </a>
                                 </td>
                             </tr>

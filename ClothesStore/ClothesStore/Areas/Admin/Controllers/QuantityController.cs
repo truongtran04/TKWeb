@@ -39,19 +39,7 @@ namespace ClothesStore.Areas.Admin.Controllers
 
             return View(clothes_Color_Size);
         }
-        public ActionResult Create()
-        {
-            // Lấy danh sách quần áo từ cơ sở dữ liệu
-            var clothesList = db.Clothes.ToList(); // Giả sử bạn dùng Entity Framework để lấy dữ liệu
-
-            // Truyền dữ liệu vào ViewBag
-            ViewBag.ClothesList = clothesList;
-
-            // Tương tự truyền danh sách SizeList nếu cần
-            ViewBag.SizeList = db.Sizes.ToList(); // Truyền SizeList để sử dụng trong View
-
-            return View();
-        }
+        
 
         [HttpPost]
         public JsonResult GetColorsByClothesID(string clothesId)
@@ -71,13 +59,20 @@ namespace ClothesStore.Areas.Admin.Controllers
             return Json(colors, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult Create(string idClothes)
+        {
+            var cloth = db.Clothes.Find(idClothes);
+            if (cloth == null)
+            {
+                return HttpNotFound("Sản phẩm không tồn tại");
+            }
 
+            ViewBag.ClothesName = cloth;
+            ViewBag.SizeList = db.Sizes.ToList(); // Truyền SizeList để sử dụng trong View
 
-        // POST: Admin/Clothes_Color_Size/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: Admin/Clothes_Color_Size/Create
-        // POST: Admin/Clothes_Color_Size/Create
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ClothesID")] Clothes_Color_Size clothes_Color_Size, string[] selectedColors)
@@ -237,7 +232,7 @@ namespace ClothesStore.Areas.Admin.Controllers
         public ActionResult GetQuantity(string idClothes)
         {
             var quantity = db.Clothes_Color_Size.Where(q => q.ClothesID == idClothes).ToList();
-
+            ViewBag.ClothesID = idClothes;
             return PartialView("_GetQuantityByClothes", quantity);
         }
     }

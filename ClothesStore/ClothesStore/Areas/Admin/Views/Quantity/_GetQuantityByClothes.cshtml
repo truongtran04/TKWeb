@@ -1,11 +1,13 @@
 ﻿@model IEnumerable<ClothesStore.Models.Clothes_Color_Size>
-
+@{
+    var clothesID = ViewBag.ClothesID;
+}
 <section class="content">
     @Html.Partial("_Messages")
     <div class="card">
         <div class="card-header border-bottom p-0 p-3 mx-1">
             <div class="col-sm-6 p-md-0">
-                <a href="@Url.Action("Create", "Quantity")" class="btn btn-success mr-2">
+                <a href="@Url.Action("Create", "Quantity", new { idClothes = clothesID })" class="btn btn-success mr-2">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     <span class="ml-1">Thêm mới</span>
                 </a>

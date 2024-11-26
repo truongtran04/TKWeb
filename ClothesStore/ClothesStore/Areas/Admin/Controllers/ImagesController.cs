@@ -47,42 +47,6 @@ namespace ClothesStore.Areas.Admin.Controllers
             return View(image);
         }
 
-        // GET: Admin/Images/Create
-        public ActionResult Create()
-        {
-            ViewBag.ClothesID = new SelectList(db.Clothes, "ClothesID", "ClothesName");
-            ViewBag.ColorID = new SelectList(db.Colors, "ColorID", "ColorName");
-            return View();
-        }
-
-        //public ActionResult Create(string id)
-        //{
-        //    // Check if the provided ID is null or invalid
-        //    if (string.IsNullOrEmpty(id))
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-
-        //    // Check if the related product exists in the database
-        //    var product = db.Clothes.Find(id);
-        //    if (product == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-
-        //    // Create a new instance of Image with the associated ClothesID
-        //    Image newImage = new Image
-        //    {
-        //        ClothesID = id
-        //    };
-
-        //    // Prepare ViewBag data for dropdowns (if needed)
-        //    ViewBag.ClothesID = new SelectList(db.Clothes, "ClothesID", "ClothesName", newImage.ClothesID);
-        //    ViewBag.ColorID = new SelectList(db.Colors, "ColorID", "ColorName"); // Color selection not preselected
-
-        //    return View(newImage);
-        //}
-
         public async Task<string> Upload(FileStream fileStream, string fileName)
         {
             var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
@@ -141,6 +105,30 @@ namespace ClothesStore.Areas.Admin.Controllers
             }
         }
 
+        public JsonResult GetColors()
+        {
+            var colors = db.Colors.Select(c => new
+            {
+                c.ColorID,
+                c.ColorName,
+                c.UrlImage // Đường dẫn đến hình ảnh
+            }).ToList();
+            return Json(colors, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Admin/Images/Create
+        public ActionResult Create(string idClothes)
+        {
+            var cloth = db.Clothes.Find(idClothes);
+            if (cloth == null)
+            {
+                return HttpNotFound("Sản phẩm không tồn tại");
+            }
+
+            ViewBag.ClothesName = cloth;
+            return View();
+        }
+
         // POST: Admin/Images/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -160,8 +148,7 @@ namespace ClothesStore.Areas.Admin.Controllers
                 var cloth = db.Clothes.Find(image.ClothesID); // Assuming you have a database context 'db'
                 if (cloth == null)
                 {
-                    // Handle the case where the ClothesID is invalid
-                    ModelState.AddModelError("ClothesID", "Invalid ClothesID.");
+                    ModelState.AddModelError("ClothesID", "Sản phẩm không hợp lệ.");
                     return View(image);
                 }
 
@@ -261,10 +248,7 @@ namespace ClothesStore.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Rebuild the view model in case of validation failure
-            ViewBag.ClothesID = new SelectList(db.Clothes, "ClothesID", "ClothesName", image.ClothesID);
-            ViewBag.ColorID = new SelectList(db.Colors, "ColorID", "ColorName", image.ColorID);
-
+            ViewBag.ClothesName = db.Clothes.Find(image.ClothesID).ClothesName;
             return View(image);
         }
 
@@ -523,7 +507,7 @@ namespace ClothesStore.Areas.Admin.Controllers
         public ActionResult GetImages(string idClothes)
         {
             var images = db.Images.Where(img => img.ClothesID == idClothes).ToList();
-
+            ViewBag.ClothesID = idClothes;
             return PartialView("_GetImagesByClothes", images);
         }
     }
